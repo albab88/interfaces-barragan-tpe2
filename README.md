@@ -14,6 +14,7 @@ La aplicación cuenta con un motor de dibujo dinámico con:
 Permite la carga de imágenes locales para su manipulación en tiempo real con los siguientes filtros:
 
 * **Brillo**
+* **Saturación**
 * **Escala de grises**
 * **Binarización**
 * **Sepia**
