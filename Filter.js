@@ -1,4 +1,6 @@
 class Filter {
+//clase para manejar los filtros de la imagen
+
     constructor(paint) {
         this.paint = paint;
     }
@@ -24,6 +26,23 @@ class Filter {
         this.apply(imageData);
     }
 
+    //filtro de saturación
+    aplicarFiltroSaturacion(valorSaturacion) {
+        let imageData = this.getImageData();
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            let r = imageData.data[i];
+            let g = imageData.data[i + 1];
+            let b = imageData.data[i + 2];
+            // Calculamos la escala de grises perceptiva
+            let sat = 0.299 * r + 0.587 * g + 0.114 * b;
+
+            imageData.data[i] = Math.min(255, sat + (r - sat) * valorSaturacion);
+            imageData.data[i + 1] = Math.min(255, sat + (g - sat) * valorSaturacion);
+            imageData.data[i + 2] = Math.min(255, sat + (b - sat) * valorSaturacion);
+        }
+        this.apply(imageData);
+    }
+
     //filtro escala de grises
     aplicarFiltroBN() {
         let imageData = this.getImageData();
@@ -31,9 +50,9 @@ class Filter {
         let r, g, b;
         let promedio;
 
-        for (let i = 0; i < canvas.height; i++) {
-            for (let j = 0; j < canvas.width; j++) {
-                index = (i * canvas.width + j) * 4;
+        for (let i = 0; i < imageData.height; i++) {
+            for (let j = 0; j < imageData.width; j++) {
+                index = (i * imageData.width + j) * 4;
 
                 r = imageData.data[index];
                 g = imageData.data[index + 1];
@@ -45,7 +64,6 @@ class Filter {
                 imageData.data[index + 2] = promedio;
             }
         }
-        //genera la nueva imagen con el filtro aplicado
         this.apply(imageData);
     }
 
@@ -59,7 +77,7 @@ class Filter {
                 let r = imageData.data[index];
                 let g = imageData.data[index + 1];
                 let b = imageData.data[index + 2];
-                let value = (r + g + b) / 3; // promedio
+                let value = (r + g + b) / 3;
                 //determina hasta que valor se vuelve blanco y hasta que valor se vuelve negro
                 if (value < 128) {
                     value = 0;
@@ -106,9 +124,9 @@ class Filter {
         let imageData = this.getImageData();
         let index;
         let r;
-        for (let y = 0; y < this.paint.canvas.height; y++) {
-            for (let x = 0; x < this.paint.canvas.width; x++) {
-                index = (y * this.paint.canvas.width + x) * 4;
+        for (let y = 0; y < imageData.height; y++) {
+            for (let x = 0; x < imageData.width; x++) {
+                index = (y * imageData.width + x) * 4;
                 r = imageData.data[index];
                 imageData.data[index] = r;
                 imageData.data[index + 1] = 0;
@@ -123,9 +141,9 @@ class Filter {
         let imageData = this.getImageData();
         let index;
         let g;
-        for (let y = 0; y < this.paint.canvas.height; y++) {
-            for (let x = 0; x < this.paint.canvas.width; x++) {
-                index = (y * this.paint.canvas.width + x) * 4;
+        for (let y = 0; y < imageData.height; y++) {
+            for (let x = 0; x < imageData.width; x++) {
+                index = (y * imageData.width + x) * 4;
                 g = imageData.data[index];
                 imageData.data[index] = 0;
                 imageData.data[index + 1] = g;
@@ -140,9 +158,9 @@ class Filter {
         let imageData = this.getImageData();
         let index;
         let b;
-        for (let y = 0; y < this.paint.canvas.height; y++) {
-            for (let x = 0; x < this.paint.canvas.width; x++) {
-                index = (y * this.paint.canvas.width + x) * 4;
+        for (let y = 0; y < imageData.height; y++) {
+            for (let x = 0; x < imageData.width; x++) {
+                index = (y * imageData.width + x) * 4;
                 b = imageData.data[index];
                 imageData.data[index] = 0;
                 imageData.data[index + 1] = 0;
@@ -155,8 +173,8 @@ class Filter {
     // Filtro que difumina la imagen
     aplicarFiltroBlur() {
         let imageData = this.getImageData();
-        let width = this.paint.canvas.width;
-        let height = this.paint.canvas.height;
+        let width = imageData.width;
+        let height = imageData.height;
         let copiaimageData = this.paint.ctx.createImageData(width, height);
 
         let kernel = [
@@ -202,8 +220,8 @@ class Filter {
     //filtro bordes con Sobel
     aplicarFiltroBordes() {
         let imageData = this.getImageData();
-        const width = this.paint.canvas.width;
-        const height = this.paint.canvas.height;
+        const width = imageData.width;
+        const height = imageData.height;
         const pixels = imageData.data;
 
         // 1. Escala de grises (necesaria para Sobel)
@@ -215,7 +233,7 @@ class Filter {
             gris[i] = 0.299 * r + 0.587 * g + 0.114 * b;
         }
 
-        // 2. Máscaras Sobel
+        // Máscaras Sobel
         const sobelX = [
             [-1, 0, 1],
             [-2, 0, 2],
@@ -251,7 +269,7 @@ class Filter {
             }
         }
 
-        // 3. Crear nuevo ImageData con el resultado y aplicar
+        // Crear nuevo ImageData con el resultado y aplicar
         const resultImage = new ImageData(output, width, height);
         this.apply(resultImage);
     }
@@ -259,8 +277,8 @@ class Filter {
     //filtro para resaltar detalles
     aplicarFiltroDetalles() {
         let imageData = this.getImageData();
-        const width = this.paint.canvas.width;
-        const height = this.paint.canvas.height;
+        const width = imageData.width;
+        const height = imageData.height;
         const pixels = imageData.data;
 
         // kernel de realce de detalles (sharpen)
@@ -291,7 +309,6 @@ class Filter {
                 }
 
                 const outIndex = (y * width + x) * 4;
-                // Validamos que los valores estén entre 0 y 255
                 output[outIndex] = Math.min(255, Math.max(0, accR));
                 output[outIndex + 1] = Math.min(255, Math.max(0, accG));
                 output[outIndex + 2] = Math.min(255, Math.max(0, accB));

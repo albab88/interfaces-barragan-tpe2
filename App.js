@@ -11,7 +11,7 @@ class App {
 
         //  --- MANEJO DE EVENTOS ---
 
-        // Mouse Events
+        // Eventos del mouse para dibujar en el canvas
         canvas.onmousedown = (e) => this.paint.startDrawing(e.offsetX, e.offsetY);
         canvas.onmousemove = (e) => this.paint.draw(e.offsetX, e.offsetY);
         canvas.onmouseup = () => this.paint.stopDrawing();
@@ -20,13 +20,12 @@ class App {
         // Herramientas básicas
         document.getElementById("pencilBtn").onclick = () => this.paint.setTool("pencil");
         document.getElementById("eraserBtn").onclick = () => this.paint.setTool("eraser");
-        document.getElementById("undoBtn").onclick = () => this.paint.undo();
         document.getElementById("clearBtn").onclick = () => this.paint.clear();
-
+        
         // Inputs para elegir color y tamaño del lapiz - tamaño de la goma
         document.getElementById("colorPicker").oninput = (e) => this.paint.setColor(e.target.value);
         document.getElementById("sizeInput").oninput = (e) => this.paint.setSize(e.target.value);
-
+        
         // Guardar y Cargar
         document.getElementById("saveBtn").onclick = () => this.saveImage();
         document.getElementById("uploadInput").onchange = (e) => {
@@ -34,21 +33,29 @@ class App {
             this.loadImage(e);
             e.target.value = "";
         };
+        
+        // Botón de deshacer filtro
+        document.getElementById("undoBtn").onclick = () => this.paint.undo();
 
         // Menús de filtros desplegable cuando se hace click
         document.getElementById("toggleFiltros").onclick = () => {
             document.getElementById("filtrosMenu").classList.toggle("open");
         };
 
-        // Filtros (Llamando a la instancia)
+        // Filtros (Llamando a la instancia en cada caso)
         document.getElementById("btn-FiltroBrillo").onclick = () => {
             this.paint.saveState();
             filterManager.aplicarFiltroBrillo(10);
         };
 
+        document.getElementById("btn-FiltroSaturacion").onclick = () => {
+            this.paint.saveState();
+            filterManager.aplicarFiltroSaturacion(1.2);
+        };
+
         document.getElementById("btn-FiltroBN").onclick = () => {
-            this.paint.saveState();      // Primero Paint guarda el historial
-            filterManager.aplicarFiltroBN(); // Luego la clase estática procesa
+            this.paint.saveState();
+            filterManager.aplicarFiltroBN();
         };
 
         document.getElementById("btn-FiltroBinarizacion").onclick = () => {
@@ -99,23 +106,23 @@ class App {
 
     // --- FIN DE MANEJO DE EVENTOS ---
 
-    //funcion para guarda la imagen creada por el usuario
+    //función para guardar la imagen creada por el usuario
     saveImage() {
-        // Pedirle el nombre al usuario mediante una ventana emergente
+        // Le pedi el nombre al usuario mediante una ventana emergente
         let nombreArchivo = prompt("Ingresa el nombre para tu dibujo:");
         if (nombreArchivo.trim() === "") {
             nombreArchivo = "sin-titulo";
         }
-        // Crear el enlace de descarga
+        // Crea el enlace de descarga
         const link = document.createElement("a");
-        // Usamos el nombre que eligió el usuario + la extensión
+        // Usa el nombre que eligió el usuario + la extensión
         link.download = `${nombreArchivo}.png`;
         link.href = this.paint.canvas.toDataURL();
-        // Ejecutar la descarga
+        // Ejecuta la descarga
         link.click();
     }
 
-    //funcion para cargar una imagen al canvas desde la pc del usuario
+    //función para cargar una imagen al canvas desde la pc del usuario
     loadImage(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -125,7 +132,7 @@ class App {
             img.onload = () => {
                 this.paint.ctx.globalCompositeOperation = "source-over";
                 this.paint.ctx.drawImage(img, 0, 0, this.paint.canvas.width, this.paint.canvas.height);
-                e.target.vakue = "";
+                e.target.value = "";
             };
             img.src = event.target.result;
         };
