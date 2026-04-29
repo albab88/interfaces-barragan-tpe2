@@ -8,10 +8,10 @@ Una aplicación interactiva orientada al procesamiento digital de imágenes y di
 ## 🖌️ Herramientas de Dibujo
 La aplicación cuenta con un motor de dibujo dinámico con:
 * **Lápiz y Goma**: Herramientas con gestión de parámetros ajustables.
-* **Personalización**: Posibilidad de modificar el grosor y el color del trazo del lápiz mediante un selector cromático.
+* **Personalización**: Posibilidad de modificar el grosor y el color del trazo del lápiz mediante un selector cromático. También es posible modificar el grosor de la goma
 
 ## 📷 Procesamiento de Imágenes y Filtros
-Permite la carga de imágenes locales para su manipulación en tiempo real con los siguientes filtros:
+Permite la carga de imágenes desde la PC del usuario para su manipulación en tiempo real con los siguientes filtros:
 
 * **Brillo**
 * **Saturación**
@@ -20,7 +20,7 @@ Permite la carga de imágenes locales para su manipulación en tiempo real con l
 * **Sepia**
 * **Negativo**
 * **Filtros de color RGB**
-* **Blur**
+* **Difuminar imagen**
 * **Detección de Bordes**
 * **Resaltar Detalles**
 
